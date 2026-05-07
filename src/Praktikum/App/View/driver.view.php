@@ -1,30 +1,31 @@
+
 <?php
 require_once 'partials/head.php';
 require_once 'partials/navigation.php';
 ?>
 
 <section>
-    <h2>Bäcker</h2>
-    <p>Der Bäcker bereitet die Burger zu.</p>
+    <h2>Fahrer</h2>
+    <p>Der Fahrer liefert die Bestellungen.</p>
 
     <form action="https://echo.hofmann-thomas.de" method="POST">
-        <h3>Status ändern</h3>
+        <h3>Lieferstatus ändern</h3>
         <p>
             <label>
-                <input type="radio" name="baker_status" value="bereit" required>
-                Bereit
+                <input type="radio" name="driver_status" value="abholen" required>
+                Abholen
             </label>
         </p>
         <p>
             <label>
-                <input type="radio" name="baker_status" value="inVorbereitung">
-                In Vorbereitung
+                <input type="radio" name="driver_status" value="unterwegs">
+                Unterwegs
             </label>
         </p>
         <p>
             <label>
-                <input type="radio" name="baker_status" value="ausgefallen">
-                Ausgefallen
+                <input type="radio" name="driver_status" value="geliefert">
+                Geliefert
             </label>
         </p>
 
