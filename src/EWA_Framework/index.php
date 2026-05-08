@@ -19,7 +19,6 @@ try {
             require_once 'App/Controller/AboutController.php';
             $controller = new AboutController();
             break;
-        
 
         default:
             http_response_code(404);
