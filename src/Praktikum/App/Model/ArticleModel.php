@@ -1,68 +1,72 @@
 <?php
-// App/Model/ArticleModel.php
+declare(strict_types=1);
 
-namespace App\Model;
+require_once 'App/Core/BaseModel.php';
 
-require_once __DIR__ . '/../Core/BaseModel.php';
-
-use App\Core\BaseModel;
-
-class ArticleModel extends \BaseModel
+class ArticleModel extends BaseModel 
 {
-    // Alle Artikel holen
-    public function getAllArticles()
+    /**
+     * get all articles
+     */
+    public function getAll(): array
     {
-        $sql = "SELECT * FROM articles";
+        $sql = "SELECT article_id, name, picture, description, price FROM article";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        $result = $this->db->query($sql);
-
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $result->fetch_all(MYSQLI_ASSOC) ?: [];
     }
 
-    // Einen Artikel per ID holen
-    public function getArticleById($id)
+    /**
+     *  get articles by id
+     */
+    public function getById(int $id): ?array
     {
-        $id = (int)$id;
+        $sql = "SELECT article_id, name, picture, description, price FROM article WHERE article_id = ? LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        $sql = "SELECT * FROM articles WHERE id = $id";
-
-        $result = $this->db->query($sql);
-
-        return $result->fetch_assoc();
+        $row = $result->fetch_assoc();
+        return $row ?: null;
     }
 
-    // Artikel erstellen
-    public function createArticle($name)
+    /**
+     * create new article
+     */
+    public function create(array $data): int
     {
-        $name = $this->db->real_escape_string($name);
+        $sql = "INSERT INTO article (name, picture,description, price) VALUES (?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("sssd",$data['name'],$data['picture'],$data['description'],$data['price']);
+        $stmt->execute();
 
-        $sql = "INSERT INTO articles (name)
-                VALUES ('$name')";
-
-        return $this->db->query($sql);
+        return $this->db->insert_id;
     }
 
-    // Artikel aktualisieren
-    public function updateArticle($id, $name)
+    /**
+     * update article
+     */
+    public function update(int $id, array $data): bool
     {
-        $id = (int)$id;
-        $name = $this->db->real_escape_string($name);
+        $sql = "UPDATE article SET name = ?, picture = ?, description=?, price = ? WHERE article_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("sssdi",$data['name'],$data['picture'],$data['description'],$data['price'],$id);
 
-        $sql = "UPDATE articles
-                SET name = '$name'
-                WHERE id = $id";
-
-        return $this->db->query($sql);
+        return $stmt->execute();
     }
 
-    // Artikel löschen
-    public function deleteArticle($id)
+    /**
+     * delete article
+     */
+    public function delete(int $id): bool
     {
-        $id = (int)$id;
+        $sql = "DELETE FROM article WHERE article_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id);
 
-        $sql = "DELETE FROM articles
-                WHERE id = $id";
-
-        return $this->db->query($sql);
+        return $stmt->execute();
     }
 }

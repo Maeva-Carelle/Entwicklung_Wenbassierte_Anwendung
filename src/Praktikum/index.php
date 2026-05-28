@@ -12,30 +12,23 @@ $router = new Router();
 try {
     switch ($router->getRoute()) {
         case '':
-        case 'index':
-            require_once 'App/Controller/IndexController.php';
-            $controller = new IndexController();
-            break;
-        case 'about':
-            require_once 'App/Controller/AboutController.php';
-            $controller = new AboutController();
-            break;
+        
         case 'order':
-        require_once 'App/Controller/OrderController.php';
-        $controller = new OrderController();
-        break;
-    case 'baker':
-        require_once 'App/Controller/BakerController.php';
-        $controller = new BakerController();
-        break;
-    case 'driver':
-        require_once 'App/Controller/DriverController.php';
-        $controller = new DriverController();
-        break;
-    case 'customer':
-        require_once 'App/Controller/CustomerController.php';
-        $controller = new CustomerController();
-        break;
+            require_once 'App/Controller/OrderController.php';
+            $controller = new OrderController();
+            break;
+        case 'baker':
+            require_once 'App/Controller/BakerController.php';
+            $controller = new BakerController();
+            break;
+        case 'driver':
+            require_once 'App/Controller/DriverController.php';
+            $controller = new DriverController();
+            break;
+        case 'customer':
+            require_once 'App/Controller/CustomerController.php';
+            $controller = new CustomerController();
+            break;
         
 
         default:

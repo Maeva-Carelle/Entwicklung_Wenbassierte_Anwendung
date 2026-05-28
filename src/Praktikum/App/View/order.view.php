@@ -1,19 +1,22 @@
 
 <!-- order.php -->
 <?php
+// Daten vom Controller empfangen
+$articles = $data['articles'] ?? [];
 require_once 'partials/head.php';
 
+
 ?>
-<body>
+
     <header>
         <h1>Bestellung</h1>
         <?php require_once 'partials/navigation.php'; ?>
         <h2>Speisekarte</h2>
     </header>
-<section>
+<section class="burger-container">
     <!-- Burger 1 -->
     <div class="burger-classic">
-        <h3>Classy Burger</h3>
+        <h3>Classy</h3>
         <img src="assets/images/simple_burger.jpg" width="300" height="200" alt="Burger-classic">
         <br>
         <i>Ein handgemachter Burger mit einem Patty, Käse, Salat, Tomate, Zwiebeln und heller Sauce und einem Sesam Brötchen.</i>
@@ -23,7 +26,7 @@ require_once 'partials/head.php';
 
     <!-- Burger 2 -->
     <div class="burger-two-pattys">
-        <h3>Double Cheese-Burger</h3>
+        <h3>Double Cheese</h3>
         <img src="assets/images/burger-zwei-pattys.jpg" width="300" height="200" alt="Burger-two-pattys">
         <br>
         <i>Ein hausgemachter Cheese-Burger mit zwei Pattys, jeweils mit Käse überbacken und Salat, Tomaten und roten Zwiebeln und einem Brioche Brötchen mit Sesam.</i>
@@ -33,7 +36,7 @@ require_once 'partials/head.php';
 
     <!-- Burger 3 -->
     <div class="burger-special">
-        <h3>Special Burger</h3>
+        <h3>Special</h3>
         <img src="assets/images/burger-zweipattys-bacon.jpg" width="300" height="200" alt="Burger-special">
         <br>
         <i>Ein hausgemachter Cheese-Burger mit zwei Pattys, jeweils mit Käse überbacken und Bacon und einem saftigen Brioche Brötchen.</i>
@@ -42,15 +45,17 @@ require_once 'partials/head.php';
     </div>
 </section>
 
-<form action="https://echo.hofmann-thomas.de" method="POST">
+<form action="?route=order" method="POST">
     <section>
         <h2>Warenkorb</h2>
         <label for="warenkorb">Wählen Sie mindestens einen Burger:</label>
         <br>
-        <select name="burger-variante[]" id="warenkorb" multiple size="5" required>
-            <option value="Classic">Classic – 10 €</option>
-            <option value="Double">Double – 12 €</option>
-            <option value="Special">Special – 15 €</option>
+       <select name="articles[]" id="warenkorb" multiple size="5" required>
+            <?php foreach ($articles as $article): ?>
+            <option value="<?= $article['article_id'] ?>">
+                <?= htmlspecialchars($article['name']) ?> – <?= number_format($article['price'], 2) ?> €
+            </option>
+            <?php endforeach; ?>
         </select>
     </section>
 
@@ -69,8 +74,8 @@ require_once 'partials/head.php';
     <section>
         <h2>Adresse</h2>
         <p>
-            <label for="post_adress">Adresse:</label><br>
-            <input id="post_adress" type="text" name="post_adress" placeholder="Adresse eingeben" required>
+            <label for="adress">Adresse:</label><br>
+            <input id="adress" type="text" name="adress" placeholder="Adresse eingeben" required>
         </p>
     </section>
 

@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-
 abstract class BaseModel
 {
     protected readonly MySQLi $db;
@@ -22,7 +21,7 @@ abstract class BaseModel
         // TODO: Replace these placeholders with your actual database credentials
         $user = 'public';
         $password = 'public';
-        $database = 'YOUR_DATABASE'; 
+        $database = 'pizzaservice'; 
 
         if ($database === 'YOUR_DATABASE') {
             echo '<h2>⚠️ Please set your database credentials in BaseModel.php before continuing.</h2>';
