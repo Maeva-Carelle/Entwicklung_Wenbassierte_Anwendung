@@ -8,3 +8,4 @@
         <li><a href="<?= Router::generateUrl('customer') ?>">Kunde</a></li>
     </ul>
 </nav>
+

@@ -6,7 +6,7 @@ require_once 'partials/head.php';
 ?>
 
 <header>
-    <h1>Bestellung</h1>
+    <h1>Mazama Burger House</h1>
 
     <?php require_once 'partials/navigation.php'; ?>
 

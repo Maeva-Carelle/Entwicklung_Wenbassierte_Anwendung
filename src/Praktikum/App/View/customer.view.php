@@ -7,7 +7,7 @@ require_once 'partials/head.php';
 ?>
 
 <header>
-    <h1><?= htmlspecialchars($data['page_title'] ?? 'Bestellung') ?></h1>
+    <h1><?= htmlspecialchars($data['page_title'] ?? 'Mazama Burger House') ?></h1>
 
     <?php require_once 'partials/navigation.php'; ?>
 
