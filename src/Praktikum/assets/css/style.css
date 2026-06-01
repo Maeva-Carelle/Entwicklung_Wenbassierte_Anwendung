@@ -1,0 +1,455 @@
+:root {
+    --black: #050505;
+    --dark: #111111;
+    --card: #171717;
+    --orange: #ff6a00;
+    --orange-dark: #b13b00;
+    --white: #ffffff;
+    --gray: #d8d8d8;
+}
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, rgba(255, 106, 0, 0.18), transparent 35%),
+        linear-gradient(to bottom, #050505, #151515);
+    color: var(--white);
+    min-height: 100vh;
+}
+
+/* NAVIGATION */
+nav {
+    background: rgba(0, 0, 0, 0.95);
+    border-bottom: 2px solid var(--orange);
+    padding: 1.2rem 2rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    list-style: none;
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+nav a:hover {
+    color: var(--orange);
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    padding: 2rem 1rem 1rem;
+}
+
+header h1 {
+   
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: var(--white);
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+}
+
+header h1::first-letter {
+    color: var(--orange);
+}
+
+/* MENU HERO */
+.menu-hero {
+    text-align: center;
+    margin: 2rem auto 3rem;
+}
+
+.menu-subtitle {
+    color: var(--orange);
+    font-size: 3rem;
+    font-style: italic;
+    font-family: cursive;
+    margin-bottom: -35px;
+}
+
+
+.menu-hero h2 {
+    font-size: 5rem;
+    color: #e8e8e8;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 2px 2px 0 #555;
+    margin: 0;
+  
+}
+
+.menu-icons {
+    color: var(--orange);
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.section-title {
+    color: #e8e8e8;
+    font-size: 2rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 2rem 0;
+}
+
+/* HEADINGS */
+h2 {
+    text-align: center;
+    font-size: 2.3rem;
+    text-transform: uppercase;
+    color: var(--white);
+    margin: 2rem 0;
+    letter-spacing: 2px;
+}
+
+h2::before,
+h2::after,
+.section-title::before,
+.section-title::after {
+    content: "";
+    display: inline-block;
+    width: 60px;
+    height: 3px;
+    background: var(--orange);
+    margin: 0 20px 8px;
+}
+
+.menu-hero h2::before,
+.menu-hero h2::after,
+form h2::before,
+form h2::after,
+.extra-card h3::before,
+.extra-card h3::after {
+    display: none;
+}
+
+/* MAIN */
+main {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* BURGER CONTAINER */
+.burger-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+/* BURGER CARDS */
+.burger-classic,
+.burger-two-pattys,
+.burger-special,
+.burger-card {
+    width: 340px;
+    background: linear-gradient(to bottom, #1c1c1c, #0d0d0d);
+    border: 1px solid var(--orange-dark);
+    border-radius: 18px;
+    padding: 0;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+    transition: 0.3s ease;
+}
+
+.burger-classic:hover,
+.burger-two-pattys:hover,
+.burger-special:hover,
+.burger-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--orange);
+    box-shadow: 0 12px 40px rgba(255, 106, 0, 0.25);
+}
+
+.burger-classic img,
+.burger-two-pattys img,
+.burger-special img,
+.burger-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 0;
+    margin-bottom: 1.5rem;
+}
+
+.burger-classic h3,
+.burger-two-pattys h3,
+.burger-special h3,
+.burger-card h3 {
+    color: var(--orange);
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.8rem;
+}
+
+.burger-classic i,
+.burger-two-pattys i,
+.burger-special i,
+.burger-description {
+    display: block;
+    color: var(--gray);
+    font-size: 1rem;
+    line-height: 1.5;
+    font-style: normal;
+    padding: 0 1.3rem;
+    min-height: 75px;
+    margin-bottom: 1rem;
+}
+
+.price {
+    display: block;
+    color: var(--orange);
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.burger-classic button,
+.burger-two-pattys button,
+.burger-special button,
+.burger-card button {
+    width: 70%;
+    margin-bottom: 1.2rem;
+}
+
+/* EXTRAS SECTION */
+.extras-section {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin: 2.5rem auto 4rem;
+}
+
+.extra-card {
+    width: 340px;
+    min-height: 260px;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--orange-dark);
+    border-radius: 18px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+    transition: 0.3s ease;
+}
+
+.extra-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--orange);
+    box-shadow: 0 12px 40px rgba(255, 106, 0, 0.25);
+}
+
+.extra-content {
+    min-height: 260px;
+    padding: 2rem;
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.86),
+        rgba(0, 0, 0, 0.48)
+    );
+}
+
+.extra-card h3 {
+    color: #e8e8e8;
+    text-align: left;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1.6rem;
+}
+
+.extra-card h3::before {
+    display: inline-block;
+    margin-right: 12px;
+    color: var(--orange);
+    font-size: 2rem;
+}
+
+
+.extra-card p {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--white);
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+}
+
+.extra-card span {
+    color: var(--orange);
+    font-weight: bold;
+}
+
+/* FORM */
+form {
+    max-width: 700px;
+    margin: 4rem auto;
+    background: linear-gradient(to bottom, #1c1c1c, #0d0d0d);
+    border: 1px solid var(--orange-dark);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+}
+
+form h2 {
+    text-align: left;
+    font-size: 1.6rem;
+    color: var(--orange);
+}
+
+label {
+    color: var(--white);
+    font-weight: bold;
+}
+
+select,
+input[type="text"] {
+    width: 100%;
+    padding: 0.9rem;
+    margin: 0.6rem 0 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background: #111;
+    color: var(--white);
+    font-size: 1rem;
+}
+
+input[type="radio"] {
+    margin: 0.8rem 0.4rem 1.2rem 1rem;
+}
+
+/* BUTTONS */
+button {
+    background: transparent;
+    color: var(--orange);
+    border: 2px solid var(--orange);
+    padding: 0.9rem 1.3rem;
+    border-radius: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: 0.4rem;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: var(--orange);
+    color: var(--black);
+    transform: scale(1.04);
+}
+
+button[type="submit"] {
+    background: var(--orange);
+    color: var(--black);
+}
+
+button[type="submit"]:hover {
+    background: var(--white);
+    border-color: var(--white);
+}
+
+/* ORDER / STATUS CARDS */
+.orders-container {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.order-card {
+    background: #151515;
+    border-left: 5px solid var(--orange);
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+}
+
+.order-card h3 {
+    color: var(--orange);
+}
+
+/* FOOTER */
+footer {
+    background: #000;
+    color: var(--white);
+    text-align: center;
+    padding: 2rem;
+    border-top: 2px solid var(--orange);
+    margin-top: 4rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    nav ul {
+        gap: 1rem;
+        flex-direction: column;
+    }
+
+    header h1 {
+        font-size: 2.2rem;
+    }
+
+    .menu-subtitle {
+        font-size: 2rem;
+        margin-bottom: -0.5rem;
+    }
+
+    .menu-hero h2 {
+        font-size: 3rem;
+    }
+
+    h2::before,
+    h2::after,
+    .section-title::before,
+    .section-title::after {
+        display: none;
+    }
+
+    .burger-classic,
+    .burger-two-pattys,
+    .burger-special,
+    .burger-card,
+    .extra-card {
+        width: 100%;
+    }
+}
+
+.title-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    vertical-align: middle;
+    object-fit: contain;
+
+    filter: brightness(0) saturate(100%)
+            invert(52%) sepia(94%)
+            saturate(2700%)
+            hue-rotate(4deg)
+            brightness(102%)
+            contrast(105%);
+}
