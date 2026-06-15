@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 require_once 'App/Core/BaseModel.php';
 
-class ArticleModel extends BaseModel 
+class ArticleModel extends BaseModel
 {
     /**
      * get all articles
      */
     public function getAll(): array
     {
-        $sql = "SELECT article_id, name, picture, description, price FROM article";
+        $sql = "SELECT article_id, name, picture, price FROM article";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -19,11 +19,11 @@ class ArticleModel extends BaseModel
     }
 
     /**
-     *  get articles by id
+     * get article by id
      */
     public function getById(int $id): ?array
     {
-        $sql = "SELECT article_id, name, picture, description, price FROM article WHERE article_id = ? LIMIT 1";
+        $sql = "SELECT article_id, name, picture, price FROM article WHERE article_id = ? LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -38,9 +38,14 @@ class ArticleModel extends BaseModel
      */
     public function create(array $data): int
     {
-        $sql = "INSERT INTO article (name, picture,description, price) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO article (name, picture, price) VALUES (?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("sssd",$data['name'],$data['picture'],$data['description'],$data['price']);
+        $stmt->bind_param(
+            "ssd",
+            $data['name'],
+            $data['picture'],
+            $data['price']
+        );
         $stmt->execute();
 
         return $this->db->insert_id;
@@ -51,9 +56,15 @@ class ArticleModel extends BaseModel
      */
     public function update(int $id, array $data): bool
     {
-        $sql = "UPDATE article SET name = ?, picture = ?, description=?, price = ? WHERE article_id = ?";
+        $sql = "UPDATE article SET name = ?, picture = ?, price = ? WHERE article_id = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("sssdi",$data['name'],$data['picture'],$data['description'],$data['price'],$id);
+        $stmt->bind_param(
+            "ssdi",
+            $data['name'],
+            $data['picture'],
+            $data['price'],
+            $id
+        );
 
         return $stmt->execute();
     }

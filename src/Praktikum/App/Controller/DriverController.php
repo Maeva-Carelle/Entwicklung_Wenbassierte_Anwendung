@@ -17,19 +17,25 @@ class DriverController extends BaseController
     public function processData(): void 
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['delete_ordering_id'])) {
-                // Bestellung löschen (ausgeliefert)
-                $this->orderingModel->delete((int)$_POST['delete_ordering_id']);
-                
-                header('Location: ' . Router::generateUrl('driver') . '?message=deleted');
-                exit;
-            } elseif (isset($_POST['ordered_article_id'])) {
-                // Status update
-                $status = (int)$_POST['status'];
-                $orderedArticleId = (int)$_POST['ordered_article_id'];
-                $this->orderingModel->updateStatus($orderedArticleId, $status);
-                
+
+            // Status ändern (z. B. "unterwegs")
+            if (isset($_POST['ordering_id'], $_POST['status'])) {
+
+                $this->orderingModel->updateOrderStatus(
+                    (int)$_POST['ordering_id'],
+                    (int)$_POST['status']
+                );
+
                 header('Location: ' . Router::generateUrl('driver') . '?message=updated');
+                exit;
+            }
+
+            // Bestellung löschen (ausgeliefert)
+            if (isset($_POST['delete_ordering_id'])) {
+
+                $this->orderingModel->delete((int)$_POST['delete_ordering_id']);
+
+                header('Location: ' . Router::generateUrl('driver') . '?message=deleted');
                 exit;
             }
         }
@@ -37,11 +43,8 @@ class DriverController extends BaseController
 
     public function getData(): array 
     {
-        $orders = $this->orderingModel->getOrdersWithStatus();
-        
         return [
-            'orders' => $orders,
-            
+            'orders' => $this->orderingModel->getOrdersReadyForDelivery()
         ];
     }
 

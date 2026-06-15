@@ -4,87 +4,86 @@ $message = $_GET['message'] ?? '';
 
 require_once 'partials/head.php';
 
+$page_title = 'Mazama Burger House';
+$page_subtitle = 'Fahrer';
+require_once 'partials/header.php';
 ?>
-
-<header>
-    <h1>Mazama Burger House</h1>
-
-    <?php require_once 'partials/navigation.php'; ?>
-
-    <h2>Fahrer</h2>
-</header>
 
 <main>
 
 <section>
-    
-    <p>Der Fahrer liefert die Bestellungen.</p>
+
+    <p>Der Fahrer liefert die Bestellungen aus.</p>
 
     <?php if ($message === 'updated'): ?>
         <p style="color: green;">Status erfolgreich aktualisiert!</p>
     <?php endif; ?>
 
     <?php if ($message === 'deleted'): ?>
-        <p style="color: green;">Bestellung als ausgeliefert markiert!</p>
+        <p style="color: green;">Bestellung wurde ausgeliefert!</p>
     <?php endif; ?>
 
     <?php if (empty($orders)): ?>
-        <p>Derzeit keine offenen Bestellungen.</p>
+        <p>Derzeit keine zur Auslieferung bereiten Bestellungen.</p>
     <?php else: ?>
 
         <div class="orders-container">
 
-        <?php foreach ($orders as $order): ?>
-            <div class="order-card">
+            <?php foreach ($orders as $order): ?>
+                <div class="order-card">
 
-                <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
+                    <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
 
-                <p><strong>Artikel:</strong> <?= htmlspecialchars($order['article_name']) ?></p>
-                <p><strong>Preis:</strong> <?= number_format($order['article_price'], 2) ?> €</p>
-                <p><strong>Adresse:</strong> <?= htmlspecialchars($order['address']) ?></p>
+                    <p>
+                        <strong>Gesamtpreis:</strong>
+                        <?= number_format($order['total_price'], 2) ?> €
+                    </p>
 
-                <p><strong>Status:</strong>
-                    <?php if ($order['status'] == 0): ?>
-                        In Vorbereitung (Bäcker)
-                    <?php elseif ($order['status'] == 1): ?>
-                        Unterwegs
-                    <?php else: ?>
-                        Ausgeliefert
-                    <?php endif; ?>
-                </p>
+                    <p>
+                        <strong>Adresse:</strong>
+                        <?= htmlspecialchars($order['address']) ?>
+                    </p>
 
-                <!-- Status Update -->
-                <form method="POST" action="?route=driver">
-                    <input type="hidden" name="ordered_article_id" value="<?= $order['ordered_article_id'] ?>">
+                    <form method="POST" action="?route=driver" class="status-form">
 
-                    <label>
-                        <input type="radio" name="status" value="1" <?= $order['status'] == 1 ? 'checked' : '' ?>>
-                        Unterwegs
-                    </label>
+    <input type="hidden" name="ordering_id" value="<?= $order['ordering_id'] ?>">
 
-                    <label>
-                        <input type="radio" name="status" value="2" <?= $order['status'] == 2 ? 'checked' : '' ?>>
-                        Geliefert
-                    </label>
+    <div class="status-options">
 
-                    <button type="submit">Update</button>
-                </form>
+        <label>
+            <input type="radio" name="status" value="2">
+            Fertig abgeholt
+        </label>
 
-                <?php if ($order['status'] >= 1): ?>
-                    <form method="POST" action="?route=driver">
-                        <input type="hidden" name="delete_ordering_id" value="<?= $order['ordering_id'] ?>">
-                        <button type="submit" onclick="return confirm('Wirklich als geliefert löschen?')">
-                            Entfernen
-                        </button>
+        <label>
+            <input type="radio" name="status" value="3">
+            Unterwegs
+        </label>
+
+    </div>
+
+    <button type="submit">Status aktualisieren</button>
+
+</form>
+
+                    <!-- ausgeliefert -->
+                    <form method="POST" action="<?= Router::generateUrl('driver') ?>">
+                        <label>
+            
+            
+        
+                        <input type="radio" name="delete_ordering_id" value="<?= $order['ordering_id'] ?>">
+                        Ausgeliefert </label>
+                        <button type="submit">Als ausgeliefert löschen</button>
                     </form>
-                <?php endif; ?>
 
-            </div>
-        <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
 
         </div>
 
     <?php endif; ?>
+
 </section>
 
 </main>

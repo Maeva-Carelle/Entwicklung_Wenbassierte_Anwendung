@@ -38,30 +38,7 @@ class OrderingModel extends BaseModel
         $row = $result->fetch_assoc();
         return $row ?: null;
     }
-    public function getGroupedByAddress(): array
-{
-    $sql = "
-        SELECT 
-            o.ordering_id,
-            o.address,
-            o.ordering_time,
-            oa.ordered_article_id,
-            oa.article_id,
-            oa.status,
-            a.name AS article_name,
-            a.price AS article_price
-        FROM ordering o
-        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
-        JOIN article a ON oa.article_id = a.article_id
-        ORDER BY o.address, o.ordering_time DESC
-    ";
-
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    return $result->fetch_all(MYSQLI_ASSOC) ?: [];
-}
+    
 
     /**
      * new order 
@@ -90,6 +67,10 @@ class OrderingModel extends BaseModel
 
     /**
      * update status of ordered article
+     * // 0 = bestellt
+     * // 1 = in Vorbereitung
+     * // 2 = fertig
+     * // 3 = unterwegs
      */
     public function updateStatus(int $orderedArticleId, int $status): bool
     {
@@ -119,11 +100,67 @@ class OrderingModel extends BaseModel
         return $stmt->execute();
     }
 
-    /**
-     * get orders with status from baker and driver
-     */
-    public function getOrdersWithStatus(): array
-    {
-        return $this->getAll();  // Gleiche Query wie getAll()
-    }
+    
+/* this is for driver*/
+    public function getOrdersReadyForDelivery(): array
+{
+    $sql = "
+        SELECT 
+            o.ordering_id,
+            o.address,
+            o.ordering_time,
+            SUM(a.price) AS total_price
+        FROM ordering o
+        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
+        JOIN article a ON oa.article_id = a.article_id
+        GROUP BY o.ordering_id
+        HAVING MIN(oa.status) >= 2
+           
+    ";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
 }
+    
+/* this is for baker*/ 
+    public function getOrdersForBaker(): array
+{
+    $sql = "
+        SELECT o.ordering_id, o.address, o.ordering_time,
+               oa.ordered_article_id, oa.article_id, oa.status,
+               a.name AS article_name, a.price AS article_price
+        FROM ordering o
+        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
+        JOIN article a ON oa.article_id = a.article_id
+        WHERE oa.status < 3
+        ORDER BY o.ordering_time DESC
+    ";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
+}
+
+public function updateOrderStatus(int $orderingId,int $status): bool
+{
+    $sql = "
+        UPDATE ordered_article
+        SET status = ?
+        WHERE ordering_id = ?
+    ";
+
+    $stmt = $this->db->prepare($sql);
+
+    $stmt->bind_param(
+        "ii",
+        $status,
+        $orderingId
+    );
+
+    return $stmt->execute();
+}
+
+
+}
+

@@ -30,13 +30,14 @@ class BakerController extends BaseController
 
     public function getData(): array 
     {
-        $orders = $this->orderingModel->getOrdersWithStatus();
+        $orders = $this->orderingModel->getOrdersForBaker();
         
         return [
             'orders' => $orders,
             'page_title' => 'Bäcker-Ansicht'
         ];
     }
+    
 
     public function generateResponse(): void 
     {
@@ -49,4 +50,5 @@ class BakerController extends BaseController
         $this->processData();
         $this->generateResponse();
     }
+
 }

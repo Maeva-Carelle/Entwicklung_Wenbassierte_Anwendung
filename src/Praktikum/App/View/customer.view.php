@@ -1,4 +1,3 @@
-<!-- App/View/customer.view.php -->
 <?php
 $orders = $data['orders'] ?? [];
 $message = $_GET['message'] ?? '';
@@ -6,55 +5,112 @@ $message = $_GET['message'] ?? '';
 require_once 'partials/head.php';
 ?>
 
-<header>
-    <h1><?= htmlspecialchars($data['page_title'] ?? 'Mazama Burger House') ?></h1>
+<?php 
+$page_title = 'Mazama Burger House';
+$page_subtitle = 'Meine Bestellung';
+require_once 'partials/header.php';
+?>
 
-    <?php require_once 'partials/navigation.php'; ?>
-
-    <h2>Kunde</h2>
-</header>
 <main>
-    
-    
     <!-- PRG-Pattern: Erfolgsmeldung nach Bestellung -->
     <?php if ($message === 'success'): ?>
         <div class="alert alert-success">
             Ihre Bestellung wurde erfolgreich aufgegeben!
         </div>
     <?php endif; ?>
-    
-    
-    
+
     <?php if (empty($orders)): ?>
         <p>Derzeit keine Bestellungen.</p>
     <?php else: ?>
         <div class="orders-container">
 
-<?php foreach ($orders as $order): ?>
-    <div class="order-card">
+            <?php
+            // Gruppieren nach Bestellung
+            $groupedOrders = [];
+            foreach ($orders as $order) {
+                $orderId = $order['ordering_id'];
+                if (!isset($groupedOrders[$orderId])) {
+                    $groupedOrders[$orderId] = [
+                        'ordering_id' => $orderId,
+                        'address' => $order['address'],
+                        'ordering_time' => $order['ordering_time'],
+                        'articles' => []
+                    ];
+                }
+                $groupedOrders[$orderId]['articles'][] = [
+                    'name' => $order['article_name'],
+                    'price' => $order['article_price'],
+                    'status' => $order['status']
+                ];
+            }
+            ?>
 
-        <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
+            <?php foreach ($groupedOrders as $order): ?>
+                <div class="order-card">
+                    <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
+                    <p><strong>Adresse:</strong> <?= htmlspecialchars($order['address']) ?></p>
+                    <p><strong>Zeit:</strong> <?= htmlspecialchars($order['ordering_time']) ?></p>
 
-        <p><strong>Artikel:</strong> <?= htmlspecialchars($order['article_name']) ?></p>
-        <p><strong>Preis:</strong> <?= number_format($order['article_price'], 2) ?> €</p>
-        <p><strong>Adresse:</strong> <?= htmlspecialchars($order['address']) ?></p>
-        <p><strong>Zeit:</strong> <?= htmlspecialchars($order['ordering_time']) ?></p>
+                    <h4>Artikel:</h4>
+                    <ul>
+                        <?php foreach ($order['articles'] as $article): ?>
+                            <li>
+                                <?= htmlspecialchars($article['name']) ?> – <?= number_format($article['price'], 2) ?> €
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
 
-        <p>
-            <strong>Status:</strong>
-            <?php if ($order['status'] == 0): ?>
-                <span class="status-badge status-0">In Vorbereitung (Bäcker)</span>
-            <?php elseif ($order['status'] == 1): ?>
-                <span class="status-badge status-1">Fertig / Unterwegs (Fahrer)</span>
-            <?php else: ?>
-                <span class="status-badge status-2">Ausgeliefert</span>
-            <?php endif; ?>
-        </p>
+                    <?php
+$allStatuses = array_map('intval', array_column($order['articles'], 'status'));
 
-    </div>
-<?php endforeach; ?>
+/*
+ * Nimmt den höchsten Status der Bestellung:
+ * 0 = Bestellt
+ * 1 = In Vorbereitung
+ * 2 = Fertig
+ * 3 = Unterwegs
+ */
+$currentStatus = max($allStatuses);
 
-</div>
+$statusMap = [
+    0 => [
+        'text'  => 'Bestellt',
+        'class' => 'status-ordered'
+    ],
+    1 => [
+        'text'  => 'In Vorbereitung',
+        'class' => 'status-preparing'
+    ],
+    2 => [
+        'text'  => 'Fertig',
+        'class' => 'status-ready'
+    ],
+    3 => [
+        'text'  => 'Unterwegs',
+        'class' => 'status-delivery'
+    ]
+];
+
+$statusText = $statusMap[$currentStatus]['text'] ?? 'Unbekannt';
+$statusClass = $statusMap[$currentStatus]['class'] ?? '';
+?>
+
+<p>
+    <strong>Status:</strong>
+    <span class="status-badge <?= $statusClass ?>">
+        <?= htmlspecialchars($statusText) ?>
+    </span>
+</p>
+                   
+
+                    <br>
+                    <p><strong>Gesamtpreis:</strong>
+                        <?= number_format(array_sum(array_column($order['articles'], 'price')), 2) ?> €
+                    </p>
+                </div>
+            <?php endforeach; ?>
+
+        </div>
     <?php endif; ?>
 </main>
 

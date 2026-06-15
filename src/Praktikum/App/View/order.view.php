@@ -8,12 +8,11 @@ require_once 'partials/head.php';
 
 ?>
 
-    <header>
-        <h1>Mazama Burger House</h1>
-        <?php require_once 'partials/navigation.php'; ?>
-        <p class="menu-subtitle">Unsere</p>
-        <h2>Speisekarte</h2>
-    </header>
+    <?php 
+$page_title = 'Mazama Burger House';
+$page_subtitle = 'Unsere Speisekarte';
+require_once 'partials/header.php';
+?>
 <section class="burger-container">
     <!-- Burger 1 -->
     <div class="burger-classic">
@@ -123,15 +122,17 @@ require_once 'partials/head.php';
     <section>
         <h2>Adresse</h2>
         <p>
-            <label for="adress">Adresse:</label><br>
-            <input id="adress" type="text" name="adress" placeholder="Adresse eingeben" required>
+            <label for="address">Adresse:</label><br>
+            <input id="address" type="text" name="address" placeholder="Adresse eingeben" required>
         </p>
     </section>
 
     <section>
-        <h2>Bestellung ansehen</h2>
-        <p>Gesamtpreis: <strong id="gesamtpreis">17,50 €</strong></p>
-    </section>
+    <h2>Bestellung ansehen</h2>
+    <p>
+        <strong>Gesamtpreis:</strong> wird nach Bestellung berechnet
+    </p>
+</section>
 
     <button type="submit">Bestellen</button>
     <button type="reset">Alles löschen</button>
