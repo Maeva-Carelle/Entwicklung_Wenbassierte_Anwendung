@@ -1,6 +1,6 @@
 <?php
 $orders = $data['orders'] ?? [];
-$message = $data['message'] ?? '';
+$message = $_GET['message'] ?? '';
 
 require_once 'partials/head.php';
 ?>
@@ -26,9 +26,32 @@ require_once 'partials/header.php';
             <p>Derzeit keine offenen Bestellungen.</p>
         <?php else: ?>
 
-            
-            
-            <?php foreach ($orders as $order): ?>
+            <!-- Gruppieren nach Bestellung -->
+            <?php 
+            $groupedOrders = [];
+
+            foreach ($orders as $order) {
+                $orderId = $order['ordering_id'];
+
+                if (!isset($groupedOrders[$orderId])) {
+                    $groupedOrders[$orderId] = [
+                        'ordering_id' => $order['ordering_id'],
+                        'address' => $order['address'],
+                        'ordering_time' => $order['ordering_time'],
+                        'articles' => []
+                    ];
+                }
+
+                $groupedOrders[$orderId]['articles'][] = [
+                    'ordered_article_id' => $order['ordered_article_id'],
+                    'article_name' => $order['article_name'],
+                    'article_price' => $order['article_price'],
+                    'status' => $order['status']
+                ];
+            }
+            ?>
+
+            <?php foreach ($groupedOrders as $order): ?>
                 <div class="order-card">
 
                     <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
