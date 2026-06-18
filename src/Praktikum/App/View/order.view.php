@@ -93,7 +93,7 @@ require_once 'partials/header.php';
 </section>
 
 
-<form action="?route=order" method="POST">
+<form method="POST" action="<?= Router::generateUrl('order') ?>">
     <section>
         <h2>Warenkorb</h2>
         <label for="warenkorb">Wählen Sie mindestens einen Burger:</label>

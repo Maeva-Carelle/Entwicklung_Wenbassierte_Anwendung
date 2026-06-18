@@ -161,6 +161,32 @@ public function updateOrderStatus(int $orderingId,int $status): bool
     return $stmt->execute();
 }
 
+public function getGroupedOrdersForBaker(): array
+{
+    $orders = $this->getOrdersForBaker();
 
+    $groupedOrders = [];
+
+    foreach ($orders as $order) {
+        $orderId = $order['ordering_id'];
+
+        if (!isset($groupedOrders[$orderId])) {
+            $groupedOrders[$orderId] = [
+                'ordering_id' => $order['ordering_id'],
+                'address' => $order['address'],
+                'ordering_time' => $order['ordering_time'],
+                'articles' => []
+            ];
+        }
+
+        $groupedOrders[$orderId]['articles'][] = [
+            'ordered_article_id' => $order['ordered_article_id'],
+            'article_name' => $order['article_name'],
+            'article_price' => $order['article_price'],
+            'status' => $order['status']
+        ];
+    }
+
+    return $groupedOrders;
 }
-
+}

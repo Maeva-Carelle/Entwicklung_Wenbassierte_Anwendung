@@ -44,7 +44,7 @@ require_once 'partials/header.php';
                         <?= htmlspecialchars($order['address']) ?>
                     </p>
 
-                    <form method="POST" action="?route=driver" class="status-form">
+                    <form method="POST" action="<?= Router::generateUrl('driver') ?>" class="status-form">
 
     <input type="hidden" name="ordering_id" value="<?= $order['ordering_id'] ?>">
 
