@@ -124,23 +124,7 @@ class OrderingModel extends BaseModel
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
 }
     
-/* this is for baker*/ 
-    public function getOrdersForBaker(): array
-{
-    $sql = "
-        SELECT o.ordering_id, o.address, o.ordering_time,
-               oa.ordered_article_id, oa.article_id, oa.status,
-               a.name AS article_name, a.price AS article_price
-        FROM ordering o
-        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
-        JOIN article a ON oa.article_id = a.article_id
-        WHERE oa.status < 3
-        ORDER BY o.ordering_time DESC
-    ";
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
-}
+
 
 public function updateOrderStatus(int $orderingId,int $status): bool
 {
@@ -160,7 +144,55 @@ public function updateOrderStatus(int $orderingId,int $status): bool
 
     return $stmt->execute();
 }
+    public function getGroupedOrdersForBaker(): array
+    {
+        $sql = "
+        SELECT 
+            o.ordering_id,
+            o.address,
+            o.ordering_time,
+            oa.ordered_article_id,
+            oa.article_id,
+            oa.status,
+            a.name AS article_name,
+            a.price AS article_price
+        FROM ordering o
+        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
+        JOIN article a ON oa.article_id = a.article_id
+        WHERE oa.status < 3
+        ORDER BY o.ordering_time DESC
+    ";
 
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+        $grouped = [];
+
+        foreach ($rows as $row) {
+
+            $id = $row['ordering_id'];
+
+            if (!isset($grouped[$id])) {
+                $grouped[$id] = [
+                    'ordering_id' => $row['ordering_id'],
+                    'address' => $row['address'],
+                    'ordering_time' => $row['ordering_time'],
+                    'articles' => []
+                ];
+            }
+
+            $grouped[$id]['articles'][] = [
+                'ordered_article_id' => $row['ordered_article_id'],
+                'article_name' => $row['article_name'],
+                'article_price' => $row['article_price'],
+                'status' => $row['status']
+            ];
+        }
+
+        return $grouped;
+    }
 
 }
 
