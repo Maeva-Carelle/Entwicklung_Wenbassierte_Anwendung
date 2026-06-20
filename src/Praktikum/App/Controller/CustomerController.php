@@ -20,7 +20,8 @@ class CustomerController extends BaseController
 
     public function getData(): array 
     {
-        $orders = $this->orderingModel->getAll();
+        $orders = $this->orderingModel->getOrdersForCustomer();
+
         $message = $_GET['message'] ?? '';
         
         return [

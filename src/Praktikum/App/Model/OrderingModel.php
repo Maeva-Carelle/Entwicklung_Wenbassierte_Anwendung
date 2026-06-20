@@ -5,24 +5,6 @@ require_once 'App/Core/BaseModel.php';
 
 class OrderingModel extends BaseModel 
 {
-    /**
-     * all orders 
-     */
-    public function getAll(): array
-    {
-        $sql = "SELECT o.ordering_id, o.address, o.ordering_time,
-                       oa.ordered_article_id, oa.article_id, oa.status,
-                       a.name AS article_name, a.price AS article_price
-                FROM ordering o
-                JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
-                JOIN article a ON oa.article_id = a.article_id
-                ORDER BY o.ordering_time DESC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        return $result->fetch_all(MYSQLI_ASSOC) ?: [];
-    }
 
 
     
@@ -193,6 +175,7 @@ public function updateOrderStatus(int $orderingId,int $status): bool
         return $grouped;
     }
 
+
     public function getOrdersForCustomer(): array
     {
         $sql = "
@@ -200,46 +183,51 @@ public function updateOrderStatus(int $orderingId,int $status): bool
             o.ordering_id,
             o.address,
             o.ordering_time,
-            oa.status
+            oa.status,
+            a.name AS article_name,
+            a.price AS article_price
         FROM ordering o
         JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
-        ORDER BY o.ordering_time DESC
+        JOIN article a ON oa.article_id = a.article_id
+        ORDER BY o.ordering_id DESC
     ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
+
         $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-        $orders = [];
+        $grouped = [];
 
         foreach ($rows as $row) {
             $id = $row['ordering_id'];
 
-            if (!isset($orders[$id])) {
-                $orders[$id] = [
+            if (!isset($grouped[$id])) {
+                $grouped[$id] = [
                     'ordering_id' => $id,
                     'address' => $row['address'],
                     'ordering_time' => $row['ordering_time'],
-                    'statuses' => []
+                    'articles' => [],
+                    'status' => 3,
+                    'total_price' => 0
                 ];
             }
 
-            $orders[$id]['statuses'][] = $row['status'];
+            $grouped[$id]['articles'][] = [
+                'name' => $row['article_name'],
+                'price' => $row['article_price'],
+                'status' => $row['status']
+            ];
+
+            $grouped[$id]['total_price'] += (float)$row['article_price'];
+
+            $grouped[$id]['status'] = min(
+                $grouped[$id]['status'],
+                (int)$row['status']
+            );
         }
 
-        return $orders;
-    }
-
-    private function calculateOrderStatus(array $statuses): int
-    {
-        // alles fertig → fertig
-        if (min($statuses) >= 2) return 2;
-
-        // mindestens eins in Bearbeitung
-        if (max($statuses) == 1) return 1;
-
-        // sonst bestellt
-        return 0;
+        return $grouped;
     }
 
 }
