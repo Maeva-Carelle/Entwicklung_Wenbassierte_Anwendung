@@ -9,7 +9,7 @@ services:
     ports:
       - 127.0.0.1:80:80
     volumes:
-      - ./src:/var/www/html 
+      - ./src:/var/www/html
       - ./php-apache/httpd-ewa.conf:/etc/apache2/conf-enabled/httpd-ewa.conf:ro
     networks:
       - ewa_lab_network
@@ -34,7 +34,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - ewa_lab_network      
+      - ewa_lab_network
 
   phpadmin:
     platform: linux/amd64
@@ -48,9 +48,9 @@ services:
       PMA_HOST: mariadb
       PMA_PORT: 3306
 volumes:
-    mariadb:
-    
+  mariadb:
+
 networks:
-    ewa_lab_network:
-        name: ewa_lab_net
-        driver: bridge
+  ewa_lab_network:
+    name: ewa_lab_net
+    driver: bridge
