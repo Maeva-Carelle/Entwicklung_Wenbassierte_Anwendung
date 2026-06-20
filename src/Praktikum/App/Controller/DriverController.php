@@ -5,7 +5,7 @@ require_once 'App/Core/BaseController.php';
 require_once 'App/Model/OrderingModel.php';
 require_once 'App/Core/Router.php';
 
-class DriverController extends BaseController 
+class DriverController extends BaseController
 {
     private OrderingModel $orderingModel;
 
@@ -14,14 +14,14 @@ class DriverController extends BaseController
         $this->orderingModel = new OrderingModel();
     }
 
-    public function processData(): void 
+    public function processData(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            // Status ändern (z. B. "unterwegs")
+            // STATUS UPDATE
             if (isset($_POST['ordering_id'], $_POST['status'])) {
 
-                $this->orderingModel->updateOrderStatus(
+                $this->orderingModel->updateOrderItemsStatus(
                     (int)$_POST['ordering_id'],
                     (int)$_POST['status']
                 );
@@ -30,7 +30,7 @@ class DriverController extends BaseController
                 exit;
             }
 
-            // Bestellung löschen (ausgeliefert)
+            // DELETE (ausgeliefert)
             if (isset($_POST['delete_ordering_id'])) {
 
                 $this->orderingModel->delete((int)$_POST['delete_ordering_id']);
@@ -41,20 +41,20 @@ class DriverController extends BaseController
         }
     }
 
-    public function getData(): array 
+    public function getData(): array
     {
         return [
             'orders' => $this->orderingModel->getOrdersReadyForDelivery()
         ];
     }
 
-    public function generateResponse(): void 
+    public function generateResponse(): void
     {
         $data = $this->getData();
         $this->renderHtml('App/View/driver.view.php', ['data' => $data]);
     }
 
-    public function handleRequest(): void 
+    public function handleRequest(): void
     {
         $this->processData();
         $this->generateResponse();
