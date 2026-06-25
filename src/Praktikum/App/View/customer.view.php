@@ -1,5 +1,6 @@
 <?php
-$orders = $data['orders'] ?? [];
+
+$order = $data['order'] ?? [];
 require_once 'partials/head.php';
 ?>
 
@@ -11,57 +12,41 @@ require_once 'partials/header.php';
 
     <main>
 
-        <?php if (empty($orders)): ?>
+        <?php if (!$order): ?>
+
             <p>Derzeit keine Bestellungen.</p>
+
         <?php else: ?>
 
-            <div class="orders-container">
+            <?php
+            $statusMap = [
+                    0 => ['text' => 'Bestellt', 'class' => 'status-ordered'],
+                    1 => ['text' => 'In Vorbereitung', 'class' => 'status-preparing'],
+                    2 => ['text' => 'Fertig', 'class' => 'status-ready'],
+                    3 => ['text' => 'Unterwegs', 'class' => 'status-delivery']
+            ];
 
-                <?php foreach ($orders as $order): ?>
+            $status = $statusMap[$order['status'] ?? 0] ?? ['text' => 'Unbekannt', 'class' => ''];
+            ?>
 
-                    <?php
-                    $statusMap = [
-                            0 => ['text' => 'Bestellt', 'class' => 'status-ordered'],
-                            1 => ['text' => 'In Vorbereitung', 'class' => 'status-preparing'],
-                            2 => ['text' => 'Fertig', 'class' => 'status-ready'],
-                            3 => ['text' => 'Unterwegs', 'class' => 'status-delivery']
-                    ];
+            <div class="order-card">
 
-                    $status = $statusMap[$order['status']] ?? ['text' => 'Unbekannt', 'class' => ''];
-                    ?>
+                <h3>Bestellung #<?= (int)($order[0]['ordering_id'] ?? 0) ?></h3>
 
-                    <div class="order-card">
+                <p>
+                    <strong>Adresse:</strong>
+                    <?= htmlspecialchars($order[0]['address'] ?? '') ?>
+                </p>
 
-                        <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
-
-                        <p><strong>Adresse:</strong> <?= htmlspecialchars($order['address']) ?></p>
-                        <p><strong>Zeit:</strong> <?= htmlspecialchars($order['ordering_time']) ?></p>
-
-                        <p>
-                            <strong>Status:</strong>
-                            <span class="<?= $status['class'] ?>">
-                    <?= htmlspecialchars($status['text']) ?>
-                </span>
-                        </p>
-
-                        <h4>Artikel:</h4>
-                        <ul>
-                            <?php foreach ($order['articles'] as $article): ?>
-                                <li>
-                                    <?= htmlspecialchars($article['name']) ?> –
-                                    <?= number_format($article['price'], 2) ?> €
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-
-                        <p>
-                            <strong>Gesamtpreis:</strong>
-                            <?= number_format($order['total_price'], 2) ?> €
-                        </p>
-
-                    </div>
-
-                <?php endforeach; ?>
+                <h4>Artikel:</h4>
+                <ul>
+                    <?php foreach ($order as $article): ?>
+                        <li>
+                            <?= htmlspecialchars($article['article_name']) ?>
+                            (<?= (float)$article['article_price'] ?> €)
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
 
             </div>
 

@@ -18,15 +18,20 @@ class CustomerController extends BaseController
         
     }
 
-    public function getData(): array 
+    public function getData(): array
     {
-        $orders = $this->orderingModel->getOrdersForCustomer();
+        $orderId = $_SESSION['last_order']['order_id'] ?? null;
+
+        $order = null;
+
+        if ($orderId !== null) {
+            $order = $this->orderingModel->getOrderById($orderId);
+        }
 
         $message = $_GET['message'] ?? '';
-        
+
         return [
-            'orders' => $orders,
-            
+            'order' => $order,
             'message' => $message
         ];
     }

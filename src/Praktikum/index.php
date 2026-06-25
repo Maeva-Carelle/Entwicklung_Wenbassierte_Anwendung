@@ -1,6 +1,8 @@
 <?php
-declare(strict_types=1);
 
+
+declare(strict_types=1);
+session_start();
 require_once 'App/Core/Router.php';
 require_once 'App/Core/DebugHelper.php';
 require_once 'App/Core/BaseModel.php';
@@ -29,6 +31,10 @@ try {
         case 'customer':
             require_once 'App/Controller/CustomerController.php';
             $controller = new CustomerController();
+            break;
+        case 'api' :
+            require_once 'App/Controller/ApiController.php';
+            $controller = new ApiController();
             break;
 
         default:

@@ -27,6 +27,13 @@ class OrderController extends BaseController
             $orderId = $this->orderingModel->create([
                 'address' => $address
             ]);
+            // added session
+            $_SESSION['last_order'] = [
+                'order_id' => $orderId,
+                'address' => htmlspecialchars($address, ENT_QUOTES, 'UTF-8'),
+                'articles' => $_POST['articles'] ?? [],
+                'status' => $_POST['status'] ?? ''
+            ];
             
             // add ordered articles 
             if ($orderId && isset($_POST['articles'])) {
