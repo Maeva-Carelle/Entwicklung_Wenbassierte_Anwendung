@@ -1,8 +1,6 @@
 <?php
-
-
 declare(strict_types=1);
-session_start();
+
 require_once 'App/Core/Router.php';
 require_once 'App/Core/DebugHelper.php';
 require_once 'App/Core/BaseModel.php';
@@ -13,7 +11,7 @@ try {
     switch ($router->getRoute()) {
 
         case '':
-        case 'order': // Startseite = Bestellung
+        case 'order':
             require_once 'App/Controller/OrderController.php';
             $controller = new OrderController();
             break;
@@ -32,7 +30,8 @@ try {
             require_once 'App/Controller/CustomerController.php';
             $controller = new CustomerController();
             break;
-        case 'api' :
+
+        case 'api':
             require_once 'App/Controller/ApiController.php';
             $controller = new ApiController();
             break;
@@ -48,5 +47,5 @@ try {
 } catch (Exception $e) {
     http_response_code(500);
     echo "<h1>Unexpected error occurred</h1>";
-    echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
+    echo "<p>" . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
 }

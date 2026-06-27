@@ -5,84 +5,119 @@ $message = $_GET['message'] ?? '';
 require_once 'partials/head.php';
 ?>
 
-<?php
+<?php 
 $page_title = 'Mazama Burger House';
 $page_subtitle = 'Bäcker';
 require_once 'partials/header.php';
 ?>
 
-    <main>
-        <section>
+<main>
+    <section>
+        <?php if ($message === 'updated'): ?>
+            <div class="alert alert-success">
+                Status erfolgreich aktualisiert!
+            </div>
+        <?php endif; ?>
 
-            <?php if ($message === 'updated'): ?>
-                <div class="alert alert-success">
-                    Status erfolgreich aktualisiert!
-                </div>
-            <?php endif; ?>
+        <?php if (empty($orders)): ?>
+            <p>Derzeit keine offenen Bestellungen.</p>
+        <?php else: ?>
 
-            <?php if (empty($orders)): ?>
-                <p>Derzeit keine offenen Bestellungen.</p>
-            <?php else: ?>
+            <?php 
+            $groupedOrders = [];
 
-                <?php foreach ($orders as $order): ?>
+            foreach ($orders as $order) {
+                $orderId = (int)$order['ordering_id'];
 
-                    <div class="order-card">
+                if (!isset($groupedOrders[$orderId])) {
+                    $groupedOrders[$orderId] = [
+                        'ordering_id' => $order['ordering_id'],
+                        'address' => $order['address'],
+                        'ordering_time' => $order['ordering_time'],
+                        'articles' => []
+                    ];
+                }
 
-                        <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
+                $groupedOrders[$orderId]['articles'][] = [
+                    'ordered_article_id' => $order['ordered_article_id'],
+                    'article_name' => $order['article_name'],
+                    'article_price' => $order['article_price'],
+                    'status' => $order['status']
+                ];
+            }
+            ?>
 
-                        <p><strong>Adresse:</strong> <?= htmlspecialchars($order['address']) ?></p>
-                        <p><strong>Bestellzeit:</strong> <?= htmlspecialchars($order['ordering_time']) ?></p>
+            <?php foreach ($groupedOrders as $order): ?>
+                <div class="order-card">
 
-                        <h4>Bestellte Artikel:</h4>
+                    <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
 
-                        <ul>
+                    <p>
+                        <strong>Adresse:</strong>
+                        <?= htmlspecialchars((string)$order['address'], ENT_QUOTES, 'UTF-8') ?>
+                    </p>
 
-                            <?php foreach ($order['articles'] as $article): ?>
+                    <p>
+                        <strong>Bestellzeit:</strong>
+                        <?= htmlspecialchars((string)$order['ordering_time'], ENT_QUOTES, 'UTF-8') ?>
+                    </p>
 
-                                <li>
-                                    <?= htmlspecialchars($article['article_name']) ?>
-                                    – <?= number_format($article['article_price'], 2) ?> €
+                    <h4 class="ordered_articles">Bestellte Artikel:</h4>
 
-                                    <form method="POST" action="<?= Router::generateUrl('baker') ?>">
+                    <ul>
+                        <?php foreach ($order['articles'] as $article): ?>
+                            <li>
+                                <?= htmlspecialchars((string)$article['article_name'], ENT_QUOTES, 'UTF-8') ?>
+                                –
+                                <?= number_format((float)$article['article_price'], 2) ?> €
 
-                                        <input type="hidden" name="ordered_article_id"
-                                               value="<?= $article['ordered_article_id'] ?>">
+                                <form method="POST" action="<?= Router::generateUrl('baker') ?>" class="status-form">
+                                    <input type="hidden" name="ordered_article_id" value="<?= (int)$article['ordered_article_id'] ?>">
 
+                                    <div class="status-options">
                                         <label>
-                                            <input type="radio" name="status" value="0"
-                                                    <?= $article['status'] == 0 ? 'checked' : '' ?>>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                value="0"
+                                                onclick="this.form.submit();"
+                                                <?= (int)$article['status'] === 0 ? 'checked' : '' ?>
+                                            >
                                             Bestellt
                                         </label>
 
                                         <label>
-                                            <input type="radio" name="status" value="1"
-                                                    <?= $article['status'] == 1 ? 'checked' : '' ?>>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                value="1"
+                                                onclick="this.form.submit();"
+                                                <?= (int)$article['status'] === 1 ? 'checked' : '' ?>
+                                            >
                                             In Vorbereitung
                                         </label>
 
                                         <label>
-                                            <input type="radio" name="status" value="2"
-                                                    <?= $article['status'] == 2 ? 'checked' : '' ?>>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                value="2"
+                                                onclick="this.form.submit();"
+                                                <?= (int)$article['status'] === 2 ? 'checked' : '' ?>
+                                            >
                                             Fertig
                                         </label>
+                                    </div>
+                                </form>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
 
-                                        <button type="submit">Speichern</button>
+                </div>
+            <?php endforeach; ?>
 
-                                    </form>
-
-                                </li>
-
-                            <?php endforeach; ?>
-
-                        </ul>
-
-                    </div>
-
-                <?php endforeach; ?>
-
-            <?php endif; ?>
-
-        </section>
-    </main>
+        <?php endif; ?>
+    </section>
+</main>
 
 <?php require_once 'partials/footer.php'; ?>

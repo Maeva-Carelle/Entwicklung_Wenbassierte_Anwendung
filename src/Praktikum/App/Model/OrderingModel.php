@@ -5,8 +5,39 @@ require_once 'App/Core/BaseModel.php';
 
 class OrderingModel extends BaseModel 
 {
+    /**
+     * all orders 
+     */
+    public function getAll(): array
+    {
+        $sql = "SELECT o.ordering_id, o.address, o.ordering_time,
+                       oa.ordered_article_id, oa.article_id, oa.status,
+                       a.name AS article_name, a.price AS article_price
+                FROM ordering o
+                JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
+                JOIN article a ON oa.article_id = a.article_id
+                ORDER BY o.ordering_time DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
+        return $result->fetch_all(MYSQLI_ASSOC) ?: [];
+    }
 
+    /**
+     * order by id
+     */
+    public function getById(int $id): ?array
+    {
+        $sql = "SELECT * FROM ordering WHERE ordering_id = ? LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $row = $result->fetch_assoc();
+        return $row ?: null;
+    }
     
 
     /**
@@ -68,28 +99,7 @@ class OrderingModel extends BaseModel
 
         return $stmt->execute();
     }
-    public function getOrderById(int $orderId): array
-    {
-        $sql = "
-        SELECT
-            o.ordering_id,
-            o.address,
-            o.ordering_time,
-            oa.status,
-            a.name AS article_name,
-            a.price AS article_price
-        FROM ordering o
-        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
-        JOIN article a ON oa.article_id = a.article_id
-        WHERE o.ordering_id = ?
-    ";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("i", $orderId);
-        $stmt->execute();
-
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
     
 /* this is for driver*/
     public function getOrdersReadyForDelivery(): array
@@ -113,21 +123,25 @@ class OrderingModel extends BaseModel
 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
 }
-
-
-    public function updateOrderItemsStatus(int $orderingId, int $status): bool
-    {
-        $sql = "
-        UPDATE ordered_article
-        SET status = ?
-        WHERE ordering_id = ?
+    
+/* this is for baker*/ 
+    public function getOrdersForBaker(): array
+{
+    $sql = "
+        SELECT o.ordering_id, o.address, o.ordering_time,
+               oa.ordered_article_id, oa.article_id, oa.status,
+               a.name AS article_name, a.price AS article_price
+        FROM ordering o
+        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
+        JOIN article a ON oa.article_id = a.article_id
+        WHERE oa.status < 3
+        ORDER BY o.ordering_time DESC
     ";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
+}
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("ii", $status, $orderingId);
-
-        return $stmt->execute();
-    }
 public function updateOrderStatus(int $orderingId,int $status): bool
 {
     $sql = "
@@ -146,110 +160,25 @@ public function updateOrderStatus(int $orderingId,int $status): bool
 
     return $stmt->execute();
 }
-    public function getGroupedOrdersForBaker(): array
-    {
-        $sql = "
-        SELECT 
-            o.ordering_id,
-            o.address,
-            o.ordering_time,
-            oa.ordered_article_id,
-            oa.article_id,
-            oa.status,
-            a.name AS article_name,
-            a.price AS article_price
-        FROM ordering o
-        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
-        JOIN article a ON oa.article_id = a.article_id
-        WHERE oa.status < 3
-        ORDER BY o.ordering_time DESC
-    ";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = $result->fetch_all(MYSQLI_ASSOC);
+public function getByOrderingId(int $orderingId): array
+{
+    $sql = "SELECT o.ordering_id, o.address, o.ordering_time,
+                   oa.ordered_article_id, oa.article_id, oa.status,
+                   a.name AS article_name, a.price AS article_price
+            FROM ordering o
+            JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
+            JOIN article a ON oa.article_id = a.article_id
+            WHERE o.ordering_id = ?
+            ORDER BY oa.ordered_article_id";
 
-        $grouped = [];
+    $stmt = $this->db->prepare($sql);
+    $stmt->bind_param("i", $orderingId);
+    $stmt->execute();
 
-        foreach ($rows as $row) {
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
+}
 
-            $id = $row['ordering_id'];
-
-            if (!isset($grouped[$id])) {
-                $grouped[$id] = [
-                    'ordering_id' => $row['ordering_id'],
-                    'address' => $row['address'],
-                    'ordering_time' => $row['ordering_time'],
-                    'articles' => []
-                ];
-            }
-
-            $grouped[$id]['articles'][] = [
-                'ordered_article_id' => $row['ordered_article_id'],
-                'article_name' => $row['article_name'],
-                'article_price' => $row['article_price'],
-                'status' => $row['status']
-            ];
-        }
-
-        return $grouped;
-    }
-
-
-    public function getOrdersForCustomer(): array
-    {
-        $sql = "
-        SELECT 
-            o.ordering_id,
-            o.address,
-            o.ordering_time,
-            oa.status,
-            a.name AS article_name,
-            a.price AS article_price
-        FROM ordering o
-        JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
-        JOIN article a ON oa.article_id = a.article_id
-        ORDER BY o.ordering_id DESC
-    ";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-
-        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-        $grouped = [];
-
-        foreach ($rows as $row) {
-            $id = $row['ordering_id'];
-
-            if (!isset($grouped[$id])) {
-                $grouped[$id] = [
-                    'ordering_id' => $id,
-                    'address' => $row['address'],
-                    'ordering_time' => $row['ordering_time'],
-                    'articles' => [],
-                    'status' => 3,
-                    'total_price' => 0
-                ];
-            }
-
-            $grouped[$id]['articles'][] = [
-                'name' => $row['article_name'],
-                'price' => $row['article_price'],
-                'status' => $row['status']
-            ];
-
-            $grouped[$id]['total_price'] += (float)$row['article_price'];
-
-            $grouped[$id]['status'] = min(
-                $grouped[$id]['status'],
-                (int)$row['status']
-            );
-        }
-
-        return $grouped;
-    }
 
 }
 

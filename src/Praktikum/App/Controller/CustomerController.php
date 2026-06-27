@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once 'App/Core/BaseController.php';
 require_once 'App/Model/OrderingModel.php';
 
@@ -15,23 +19,22 @@ class CustomerController extends BaseController
 
     public function processData(): void 
     {
-        
     }
 
-    public function getData(): array
+    public function getData(): array 
     {
-        $orderId = $_SESSION['last_order']['order_id'] ?? null;
+        $orderingId = $_SESSION['ordering_id'] ?? null;
 
-        $order = null;
+        $orders = [];
 
-        if ($orderId !== null) {
-            $order = $this->orderingModel->getOrderById($orderId);
+        if ($orderingId !== null) {
+            $orders = $this->orderingModel->getByOrderingId((int)$orderingId);
         }
 
         $message = $_GET['message'] ?? '';
-
+        
         return [
-            'order' => $order,
+            'orders' => $orders,
             'message' => $message
         ];
     }

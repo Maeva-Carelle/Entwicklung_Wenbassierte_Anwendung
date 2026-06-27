@@ -28,10 +28,12 @@ class BakerController extends BaseController
         }
     }
 
-    public function getData(): array
+    public function getData(): array 
     {
+        $orders = $this->orderingModel->getOrdersForBaker();
+        
         return [
-            'orders' => $this->orderingModel->getGroupedOrdersForBaker(),
+            'orders' => $orders,
             'page_title' => 'Bäcker-Ansicht'
         ];
     }

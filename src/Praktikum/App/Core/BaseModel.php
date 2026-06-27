@@ -21,7 +21,7 @@ abstract class BaseModel
         // TODO: Replace these placeholders with your actual database credentials
         $user = 'public';
         $password = 'public';
-        $database = 'pizzaservice';
+        $database = 'pizzaservice'; 
 
         if ($database === 'YOUR_DATABASE') {
             echo '<h2>⚠️ Please set your database credentials in BaseModel.php before continuing.</h2>';

@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once 'App/Core/BaseController.php';
 require_once 'App/Model/ArticleModel.php';
 require_once 'App/Model/OrderingModel.php';
@@ -27,13 +31,10 @@ class OrderController extends BaseController
             $orderId = $this->orderingModel->create([
                 'address' => $address
             ]);
-            // added session
-            $_SESSION['last_order'] = [
-                'order_id' => $orderId,
-                'address' => htmlspecialchars($address, ENT_QUOTES, 'UTF-8'),
-                'articles' => $_POST['articles'] ?? [],
-                'status' => $_POST['status'] ?? ''
-            ];
+           
+            if ($orderId) {
+    $_SESSION['ordering_id'] = $orderId;
+}
             
             // add ordered articles 
             if ($orderId && isset($_POST['articles'])) {
