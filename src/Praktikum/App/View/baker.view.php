@@ -13,9 +13,6 @@ require_once 'partials/header.php';
 
 <main>
     <section>
-        
-
-        <!-- PRG-Pattern: Erfolgsmeldung anzeigen -->
         <?php if ($message === 'updated'): ?>
             <div class="alert alert-success">
                 Status erfolgreich aktualisiert!
@@ -26,12 +23,11 @@ require_once 'partials/header.php';
             <p>Derzeit keine offenen Bestellungen.</p>
         <?php else: ?>
 
-            <!-- Gruppieren nach Bestellung -->
             <?php 
             $groupedOrders = [];
 
             foreach ($orders as $order) {
-                $orderId = $order['ordering_id'];
+                $orderId = (int)$order['ordering_id'];
 
                 if (!isset($groupedOrders[$orderId])) {
                     $groupedOrders[$orderId] = [
@@ -56,46 +52,63 @@ require_once 'partials/header.php';
 
                     <h3>Bestellung #<?= (int)$order['ordering_id'] ?></h3>
 
-                    <p><strong>Adresse:</strong> <?= htmlspecialchars($order['address']) ?></p>
-                    <p><strong>Bestellzeit:</strong> <?= htmlspecialchars($order['ordering_time']) ?></p>
+                    <p>
+                        <strong>Adresse:</strong>
+                        <?= htmlspecialchars((string)$order['address'], ENT_QUOTES, 'UTF-8') ?>
+                    </p>
+
+                    <p>
+                        <strong>Bestellzeit:</strong>
+                        <?= htmlspecialchars((string)$order['ordering_time'], ENT_QUOTES, 'UTF-8') ?>
+                    </p>
 
                     <h4 class="ordered_articles">Bestellte Artikel:</h4>
 
                     <ul>
                         <?php foreach ($order['articles'] as $article): ?>
                             <li>
-                                <?= htmlspecialchars($article['article_name']) ?>
-                                – <?= number_format($article['article_price'], 2) ?> €
+                                <?= htmlspecialchars((string)$article['article_name'], ENT_QUOTES, 'UTF-8') ?>
+                                –
+                                <?= number_format((float)$article['article_price'], 2) ?> €
 
-                                
                                 <form method="POST" action="<?= Router::generateUrl('baker') ?>" class="status-form">
+                                    <input type="hidden" name="ordered_article_id" value="<?= (int)$article['ordered_article_id'] ?>">
 
-    <input type="hidden" name="ordered_article_id" value="<?= $article['ordered_article_id'] ?>">
+                                    <div class="status-options">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                value="0"
+                                                onclick="this.form.submit();"
+                                                <?= (int)$article['status'] === 0 ? 'checked' : '' ?>
+                                            >
+                                            Bestellt
+                                        </label>
 
-    <div class="status-options">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                value="1"
+                                                onclick="this.form.submit();"
+                                                <?= (int)$article['status'] === 1 ? 'checked' : '' ?>
+                                            >
+                                            In Vorbereitung
+                                        </label>
 
-        <label>
-            <input type="radio" name="status" value="0" <?= $article['status'] == 0 ? 'checked' : '' ?>>
-            Bestellt
-        </label>
-
-        <label>
-            <input type="radio" name="status" value="1" <?= $article['status'] == 1 ? 'checked' : '' ?>>
-            In Vorbereitung
-        </label>
-
-        <label>
-            <input type="radio" name="status" value="2" <?= $article['status'] == 2 ? 'checked' : '' ?>>
-            Fertig
-        </label>
-
-    </div>
-
-    <button type="submit">Speichern</button>
-
-</form>
-
-                                
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                value="2"
+                                                onclick="this.form.submit();"
+                                                <?= (int)$article['status'] === 2 ? 'checked' : '' ?>
+                                            >
+                                            Fertig
+                                        </label>
+                                    </div>
+                                </form>
                             </li>
                         <?php endforeach; ?>
                     </ul>

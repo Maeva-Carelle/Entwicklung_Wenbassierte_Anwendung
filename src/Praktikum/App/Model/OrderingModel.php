@@ -161,6 +161,24 @@ public function updateOrderStatus(int $orderingId,int $status): bool
     return $stmt->execute();
 }
 
+public function getByOrderingId(int $orderingId): array
+{
+    $sql = "SELECT o.ordering_id, o.address, o.ordering_time,
+                   oa.ordered_article_id, oa.article_id, oa.status,
+                   a.name AS article_name, a.price AS article_price
+            FROM ordering o
+            JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
+            JOIN article a ON oa.article_id = a.article_id
+            WHERE o.ordering_id = ?
+            ORDER BY oa.ordered_article_id";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->bind_param("i", $orderingId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
+}
+
 
 }
 
