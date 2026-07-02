@@ -14,7 +14,7 @@ require_once 'partials/header.php';
 <section class="burger-container">
 
     <?php foreach ($articles as $article): ?>
-        <div class="burger-classic">
+        <div class="burger-card">
             <img 
                 class="article-image"
                 src="/Praktikum/assets/images/<?= htmlspecialchars((string)$article['picture'], ENT_QUOTES, 'UTF-8') ?>"
@@ -28,7 +28,7 @@ require_once 'partials/header.php';
 
             <h3><?= htmlspecialchars((string)$article['name'], ENT_QUOTES, 'UTF-8') ?></h3>
 
-            <br>
+
 
             <strong class="price">
                 <?= number_format((float)$article['price'], 2) ?> €
@@ -38,39 +38,7 @@ require_once 'partials/header.php';
 
 </section>
 
-<section class="extras-section">
 
-    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/pommes.avif');">
-        <div class="extra-content">
-            <h3><i class="fa-solid fa-bowl-food"></i> Beilagen</h3>
-            <p>Pommes Frites <span>3,50 €</span></p>
-            <p>Süßkartoffel Pommes <span>4,50 €</span></p>
-            <p>Onion Rings <span>4,50 €</span></p>
-            <p>Mozzarella Sticks <span>4,50 €</span></p>
-        </div>
-    </article>
-
-    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/cola.avif');">
-        <div class="extra-content">
-            <h3><i class="fa-solid fa-glass-water"></i> Getränke</h3>
-            <p>Coca Cola <span>2,50 €</span></p>
-            <p>Coca Cola Zero <span>2,50 €</span></p>
-            <p>Fanta <span>2,50 €</span></p>
-            <p>Sprite <span>2,50 €</span></p>
-        </div>
-    </article>
-
-    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/sauce.avif');">
-        <div class="extra-content">
-            <h3><i class="fa-solid fa-bottle-droplet"></i> Saucen</h3>
-            <p>Ketchup <span>0,50 €</span></p>
-            <p>Mayo <span>0,50 €</span></p>
-            <p>BBQ Sauce <span>0,60 €</span></p>
-            <p>Chili Sauce <span>0,60 €</span></p>
-        </div>
-    </article>
-
-</section>
 
 <form id="order-form" action="<?= Router::generateUrl('order') ?>" method="POST">
     <section>
