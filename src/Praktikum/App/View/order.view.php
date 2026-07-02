@@ -17,7 +17,7 @@ require_once 'partials/header.php';
         <div class="burger-classic">
             <img 
                 class="article-image"
-                src="/Praktikum/assets/images/simple_burger.jpg"
+                src="/Praktikum/assets/images/<?= htmlspecialchars((string)$article['picture'], ENT_QUOTES, 'UTF-8') ?>"
                 width="300"
                 height="200"
                 alt="<?= htmlspecialchars((string)$article['name'], ENT_QUOTES, 'UTF-8') ?>"
@@ -27,8 +27,6 @@ require_once 'partials/header.php';
             >
 
             <h3><?= htmlspecialchars((string)$article['name'], ENT_QUOTES, 'UTF-8') ?></h3>
-
-            <i>Klicken Sie auf das Bild, um diesen Burger in den Warenkorb zu legen.</i>
 
             <br>
 
@@ -42,7 +40,7 @@ require_once 'partials/header.php';
 
 <section class="extras-section">
 
-    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/pommes.png');">
+    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/pommes.avif');">
         <div class="extra-content">
             <h3><i class="fa-solid fa-bowl-food"></i> Beilagen</h3>
             <p>Pommes Frites <span>3,50 €</span></p>
@@ -52,7 +50,7 @@ require_once 'partials/header.php';
         </div>
     </article>
 
-    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/cola.png');">
+    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/cola.avif');">
         <div class="extra-content">
             <h3><i class="fa-solid fa-glass-water"></i> Getränke</h3>
             <p>Coca Cola <span>2,50 €</span></p>
@@ -62,7 +60,7 @@ require_once 'partials/header.php';
         </div>
     </article>
 
-    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/sauce.png');">
+    <article class="extra-card" style="background-image: url('/Praktikum/assets/images/sauce.avif');">
         <div class="extra-content">
             <h3><i class="fa-solid fa-bottle-droplet"></i> Saucen</h3>
             <p>Ketchup <span>0,50 €</span></p>
