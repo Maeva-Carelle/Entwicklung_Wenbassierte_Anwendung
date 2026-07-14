@@ -49,20 +49,22 @@ require_once 'partials/header.php';
                             <div class="status-options">
                                 <label>
                                     <input
-                                        type="radio"
-                                        name="status"
-                                        value="2"
-                                        onclick="this.form.submit();"
+                                            type="radio"
+                                            name="status"
+                                            value="2"
+                                            onclick="this.form.submit();"
+                                            <?= (int)$order['status'] === 2 ? 'checked' : '' ?>
                                     >
                                     Fertig abgeholt
                                 </label>
 
                                 <label>
                                     <input
-                                        type="radio"
-                                        name="status"
-                                        value="3"
-                                        onclick="this.form.submit();"
+                                            type="radio"
+                                            name="status"
+                                            value="3"
+                                            onclick="this.form.submit();"
+                                            <?= (int)$order['status'] === 3 ? 'checked' : '' ?>
                                     >
                                     Unterwegs
                                 </label>

@@ -16,6 +16,8 @@ class BakerController extends BaseController
 
     public function processData(): void 
     {
+
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ordered_article_id'])) {
             $status = (int)$_POST['status'];
             $orderedArticleId = (int)$_POST['ordered_article_id'];
@@ -31,7 +33,7 @@ class BakerController extends BaseController
     public function getData(): array 
     {
         $orders = $this->orderingModel->getOrdersForBaker();
-        
+
         return [
             'orders' => $orders,
             'page_title' => 'Bäcker-Ansicht'

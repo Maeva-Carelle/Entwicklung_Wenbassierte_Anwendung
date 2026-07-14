@@ -103,26 +103,26 @@ class OrderingModel extends BaseModel
     
 /* this is for driver*/
     public function getOrdersReadyForDelivery(): array
-{
-    $sql = "
+    {
+        $sql = "
         SELECT 
             o.ordering_id,
             o.address,
             o.ordering_time,
-            SUM(a.price) AS total_price
+            SUM(a.price) AS total_price,
+            MIN(oa.status) AS status
         FROM ordering o
         JOIN ordered_article oa ON o.ordering_id = oa.ordering_id
         JOIN article a ON oa.article_id = a.article_id
         GROUP BY o.ordering_id
         HAVING MIN(oa.status) >= 2
-           
     ";
 
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute();
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
 
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
-}
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?: [];
+    }
     
 /* this is for baker*/ 
     public function getOrdersForBaker(): array
