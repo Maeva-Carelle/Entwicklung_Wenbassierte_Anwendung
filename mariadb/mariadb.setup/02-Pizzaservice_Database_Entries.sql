@@ -33,13 +33,28 @@ SET time_zone = "+00:00";
 -- Daten für Tabelle `article`
 --
 
-INSERT INTO `article` (`article_id`, `name`, `picture`, `price`) VALUES
-(1, 'Salami', 'pizza.png', 8.57),
-(2, 'Margherita', 'pizza.png', 12.5),
-(3, 'Hawaii', 'pizza.png', 11.99);
 
+-- neue Burger-Daten einfügen
+INSERT INTO `article` (`article_id`, `name`, `picture`, `price`) VALUES
+(1, 'Classy', 'simple_burger.jpg', 10.00),
+(2, 'Double Cheese', 'burger-zwei-pattys.jpg', 12.00),
+(3, 'Special', 'burger-zweipattys-bacon.jpg', 15.00);
 -- --------------------------------------------------------
 
+DROP TABLE IF EXISTS extras;
+CREATE TABLE `extras` (
+    `extra_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(100),
+    `price` DECIMAL(5,2),
+    `type` ENUM('beilage','getraenk','sauce'),
+    `picture` VARCHAR(255) DEFAULT NULL
+);
+
+
+INSERT INTO `extras` (`name`, `price`, `type`) VALUES
+('Pommes Frites', 3.50, 'beilage'),
+('Cola', 2.50, 'getraenk'),
+('Ketchup', 0.50, 'sauce');
 --
 -- Daten für Tabelle `ordering`
 --
